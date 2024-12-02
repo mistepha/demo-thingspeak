@@ -1,0 +1,110 @@
+services:
+    #TODO: how to automatically create initial topic?
+    kafka:
+        image: apache/kafka:latest
+        container_name: kafka
+        ports:
+            - 9092:9092
+        environment:
+            KAFKA_NODE_ID: 1
+            KAFKA_PROCESS_ROLES: broker,controller
+            KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+            KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+            KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+            KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+            KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+            KAFKA_NUM_PARTITIONS: 3
+
+    service-kafka:
+        image: node:22.11.0-alpine
+        user: ${UID:-1000}:${GID:-1000}
+        container_name: service-kafka
+        command: sh -c "npm i && npm run start:dev"
+        depends_on:
+            - kafka
+            - api
+        volumes:
+            - ./apps/service-kafka:/work
+        working_dir: /work
+        env_file: .env-kafka
+        environment:
+            - API_URL=http://api:3000/api
+            - API_KEY=very_secret_much_secure_wow
+
+    service-mqtt:
+        image: node:22.11.0-alpine
+        user: ${UID:-1000}:${GID:-1000}
+        container_name: service-mqtt
+        command: sh -c "npm i && npm run start:dev"
+        depends_on:
+            - kafka
+        volumes:
+            - ./apps/service-mqtt:/work
+        working_dir: /work
+        env_file:
+            - .env-kafka
+            - .env-mqtt
+        environment:
+            - MQTT_TOPIC=channels/2662756/subscribe
+
+    generator:
+        image: node:22.11.0-alpine
+        user: ${UID:-1000}:${GID:-1000}
+        container_name: generator
+        command: sh -c "npm i && npm run start:dev"
+        depends_on:
+            - kafka
+        volumes:
+            - ./apps/generator:/work
+        working_dir: /work
+        env_file: .env-kafka
+
+    api:
+        image: node:22.11.0-alpine
+        user: ${UID:-1000}:${GID:-1000}
+        container_name: api
+        command: sh -c "npm i && npx mikro-orm migration:up && npm run start:dev"
+        ports:
+            - 3000:3000
+        depends_on:
+            - db
+        volumes:
+            - ./apps/api:/work
+        working_dir: /work
+        env_file: .env-api
+        environment:
+            - MIKRO_ORM_HOST=db
+            - API_KEY=very_secret_much_secure_wow
+
+    app:
+        image: node:22.11.0-alpine
+        user: ${UID:-1000}:${GID:-1000}
+        container_name: app
+        command: sh -c "npm i && npm run start"
+        ports:
+            - 4200:4200
+        volumes:
+            - ./apps/app:/work
+        working_dir: /work
+        environment:
+            - PORT=4200
+            - REACT_APP_API_URL=http://localhost:3000/api
+            - REACT_APP_API_KEY=very_secret_much_secure_wow
+            - REACT_APP_WS_URL=http://localhost:3000
+
+    db:
+        image: postgres:17.2-alpine
+        container_name: db
+        shm_size: 1g
+        volumes:
+            - demo-db-data:/usr/local/var/lib/postgresql
+        ports:
+            - 5432:5432
+        env_file: .env-db
+
+volumes:
+    demo-db-data:

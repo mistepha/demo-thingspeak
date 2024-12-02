@@ -1,0 +1,206 @@
+{
+  "namespaces": [
+    "public"
+  ],
+  "name": "public",
+  "tables": [
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "comment": "id of the dataset",
+          "mappedType": "uuid"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "name of the dataset",
+          "mappedType": "text"
+        }
+      },
+      "name": "dataset",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "dataset_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "comment": "id of the dataset item",
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "bigint",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "unix timestamp at which dataset item was created",
+          "mappedType": "bigint"
+        },
+        "value1": {
+          "name": "value1",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "value of field1",
+          "mappedType": "decimal"
+        },
+        "value2": {
+          "name": "value2",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "value of field2",
+          "mappedType": "decimal"
+        },
+        "value3": {
+          "name": "value3",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "value of field3",
+          "mappedType": "decimal"
+        },
+        "value4": {
+          "name": "value4",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "value of field4",
+          "mappedType": "decimal"
+        },
+        "value5": {
+          "name": "value5",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "value of field5",
+          "mappedType": "decimal"
+        },
+        "value6": {
+          "name": "value6",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "value of field6",
+          "mappedType": "decimal"
+        },
+        "value7": {
+          "name": "value7",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "value of field7",
+          "mappedType": "decimal"
+        },
+        "value8": {
+          "name": "value8",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "value of field8",
+          "mappedType": "decimal"
+        },
+        "dataset_id": {
+          "name": "dataset_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "dataset id which the item belongs to",
+          "mappedType": "uuid"
+        }
+      },
+      "name": "dataset_item",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "dataset_id"
+          ],
+          "composite": false,
+          "keyName": "idx___dataset_item__dataset_id",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "dataset_item_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "dataset_item_dataset_id_foreign": {
+          "constraintName": "dataset_item_dataset_id_foreign",
+          "columnNames": [
+            "dataset_id"
+          ],
+          "localTableName": "public.dataset_item",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.dataset",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    }
+  ],
+  "nativeEnums": {}
+}

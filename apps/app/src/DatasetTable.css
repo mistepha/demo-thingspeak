@@ -1,0 +1,52 @@
+.DatasetTable {
+    width: 100%;
+    height: calc(100% - 34px);
+    overflow: auto;
+    display: grid;
+    grid-template-columns: max-content repeat(8, 16px auto);
+    color: white;
+    align-content: start;
+    padding-bottom: 32px;
+}
+
+
+.DatasetTable-row, .DatasetTable-header {
+    display: contents;
+}
+
+.DatasetTable-row:first-child {
+    padding-left: 16px;
+}
+
+.DatasetTable-item {
+    padding: 8px 0;
+}
+
+.DatasetTable-item.first {
+    padding-left: 16px;
+}
+
+.DatasetTable-item.last {
+    padding-right: 16px;
+}
+
+.DatasetTable-item.header {
+    position: sticky;
+    top: 0px;
+    z-index: 9;
+    background-color: #323633;
+}
+
+.DatasetTable-item.light {
+    background-color: #676e78;
+}
+
+.DatasetTable-item.dark {
+    background-color:#4a4e54;
+}
+
+.DatasetTable-item.no-data  {
+    grid-column: span 17;
+    text-align: center;
+    font-size: 1.2em;
+}

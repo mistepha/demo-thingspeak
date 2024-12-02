@@ -1,0 +1,39 @@
+version: 3
+
+dotenv: ['.env-kafka']
+
+tasks:
+  start-kafka:
+    cmds:
+      - docker compose up -d kafka
+      - docker exec --workdir /opt/kafka/bin/ -it kafka ./kafka-topics.sh --bootstrap-server localhost:9092 --create --topic $KAFKA_TOPIC
+
+  start-app:
+    cmds:
+      - docker compose up -d app
+
+  start-api:
+      - docker compose up -d api
+
+  start-services:
+    cmds:
+      - docker compose up -d service-kafka service-mqtt
+      
+  start-generator:
+      - docker compose up -d generator
+  
+  start:
+    cmds:
+      - task start-kafka
+      - task start-app
+      - task start-api
+      - task start-services
+      - task start-generator
+
+  stop:
+    cmds:
+      - docker compose down
+  
+  reset:
+    cmds:
+      - docker compose run --rm api npx mikro-orm migration:fresh
