@@ -35,7 +35,10 @@ function App() {
 
     useEffect(() => {
         socket.on(topicWS, (datasetWS) => {
-            setDatasets([...datasets.filter(d => d.id !== datasetWS.id), datasetWS]);
+            const updatedDatasets = [...datasets.filter(d => d.id !== datasetWS.id), datasetWS]
+                .sort((d1, d2) => d1.name < d2.name ? -1 : 1);
+
+            setDatasets(updatedDatasets);
 
             // replace currently active dataset
             if ((dataset && dataset.id === datasetWS.id) || !dataset) {
